@@ -324,8 +324,9 @@ img {
 .site-header {
   position: sticky;
   top: 0;
-  /* Above Leaflet's panes and controls, which climb to 800. */
-  z-index: 1000;
+  /* Page chrome sits above map chrome. Leaflet's control containers are
+     z-index 1000, so 1000 here was a tie the map won on DOM order. */
+  z-index: 1100;
   background: rgba(17, 20, 25, 0.9);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -1171,6 +1172,14 @@ img {
 .map__canvas {
   position: absolute;
   inset: 0;
+}
+
+/* Leaflet ships its zoom buttons and attribution at z-index 1000, which puts
+   them in competition with the site header. They only need to clear the map's
+   own panes (highest is the popup pane at 700), so keep them local. */
+.map .leaflet-top,
+.map .leaflet-bottom {
+  z-index: 800;
 }
 
 /* Leaflet ships a light chrome — pull it onto the section's dark palette. */

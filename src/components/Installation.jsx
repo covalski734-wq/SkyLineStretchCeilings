@@ -20,7 +20,7 @@ export default function Installation() {
             No puttying, sanding or painting. That means less dust, less
             mess and much less disruption to your home.
           </p>
-          <p className="prose prose--light" style={{ marginBottom: 0 }}>
+          <p className="prose prose--light">
             <span style={{ fontWeight: 'bold'}}>A standard room can typically be completed in just 4–6 hours.</span> More complex lighting and multi-level designs may require additional installation time.
           </p>
           <p className="prose prose--light" style={{ marginBottom: 0 }}>
