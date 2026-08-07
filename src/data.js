@@ -9,7 +9,7 @@ export const site = {
   phoneHref: 'tel:+16043452324',
   whatsapp: 'https://wa.me/16043452324',
   email: 'vladtkachenko2110@gmail.com',
-  legal: 'GREAT HOME RENOVATIONS LTD · Vancouver, BC',
+  legal: 'GREAT HOME RENOVATIONS LTD · British Columbia',
   // Brief states "8AM - 6PM" with no day breakdown — confirm before adding days.
   hours: ['8am – 6pm'],
   social: [
@@ -25,32 +25,37 @@ export const site = {
   ],
 }
 
+// Root-relative so the same links work from /privacy as well as the home page.
+// On the home page the browser treats these as same-document hash navigation,
+// so they still smooth-scroll instead of reloading.
 export const nav = [
-  { label: 'Ceilings', href: '#ceilings' },
-  { label: 'Portfolio', href: '#portfolio' },
-  { label: 'Process', href: '#process' },
-  { label: 'Reviews', href: '#reviews' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Ceilings', href: '/#ceilings' },
+  { label: 'Portfolio', href: '/#portfolio' },
+  { label: 'Process', href: '/#process' },
+  { label: 'Reviews', href: '/#reviews' },
+  { label: 'FAQ', href: '/#faq' },
 ]
 
 export const heroStats = [
   { value: 'Since 2017', label: 'Installing ceilings' },
   { value: '1–3 days', label: 'Typical project' },
-  { value: '15 yr', label: 'Warranty' },
+  { value: '10 yr', label: 'Warranty' },
 ]
 
 export const aboutChips = [
   'Perfectly flat',
   'Integrated LED',
   'Minimal dust',
-  'Fire‑safe film',
+  'Fire‑rated membrane',
 ]
 
+// Rendered as a 4-column grid — 8 cards fill two even rows.
 export const ceilingTypes = [
+  // Row 1
   {
     name: 'Glossy',
     img: '/assets/g13.jpg',
-    desc: 'A mirror‑like reflective surface that bounces light around the room and visually raises the ceiling. Our most popular finish for modern interiors.',
+    desc: 'A mirror‑like reflective finish that makes the room feel larger and brighter. A modern option for creating a more open, spacious interior.',
   },
   {
     name: 'Translucent',
@@ -60,27 +65,33 @@ export const ceilingTypes = [
   {
     name: 'LED Light Lines',
     img: '/assets/g09.png',
-    desc: 'Slim channels of hidden LED run through the ceiling as clean lines of light, shaping the room and replacing bulky fixtures.',
+    desc: 'Integrated LED lines create clean, precise lines of light across the ceiling and can be arranged to complement the geometry and design of the room.',
   },
   {
     name: 'Track Lighting',
     img: '/assets/g07.jpg',
-    desc: 'Magnetic track integrated flush into the ceiling line, so fixtures can be moved, added or re‑aimed later — the one system where you can still change the lighting scene after install.',
+    desc: 'Integrated track lighting combines a clean ceiling design with flexible lighting that can be adjusted after installation.',
+  },
+  // Row 2
+  {
+    name: 'Starry Sky',
+    img: '/assets/g24.jpg',
+    desc: 'A fibre‑optic stretch ceiling that creates a realistic night‑sky effect with tiny points of light. Ideal for bedrooms, children’s rooms and home theatres. Typically installed in 1–2 days.',
   },
   {
     name: 'Matte',
     img: '/assets/g23.jpg',
-    desc: 'A soft, paint‑like finish with zero glare — the most natural, timeless look for bedrooms, living rooms and offices. Fitted in a single day.',
+    desc: 'A smooth, non‑reflective finish that creates a clean, perfectly even surface and hides imperfections in the original ceiling. Typically installed in one day.',
   },
   {
-    name: 'Cove Lighting',
+    name: 'Floating / Cove Lighting',
     img: '/assets/g16.jpg',
     desc: 'A perimeter of concealed light that washes the ceiling with a warm, floating glow — elegant in hallways, bedrooms and lounges.',
   },
   {
     name: 'Printed / Custom',
     img: '/assets/g18.jpg',
-    desc: 'Any high‑resolution image or pattern printed onto the membrane — from a printed sky to bespoke artwork for commercial spaces. Fitted in a single day.',
+    desc: 'Create a custom ceiling with virtually any image or graphic — from a sky effect to modern artwork. A distinctive option for residential and commercial interiors.',
   },
 ]
 
@@ -91,7 +102,6 @@ export const alsoAvailable = [
   'Fabric / polyester systems',
   'Multi‑level ceilings',
   'Acoustic / perforated',
-  'Starry sky (fibre optic)',
   'Stretch walls',
   'Repair & membrane replacement',
 ]
@@ -158,40 +168,42 @@ export const benefits = [
   },
   {
     no: '05',
-    title: 'Fire‑safe materials',
-    text: 'Certified, fire‑rated films that meet North American safety standards for homes and businesses.',
+    title: 'Fire‑rated materials',
+    text: 'Selected membranes meet recognized fire-rating standards, including CAN-S102 and ASTM E84, depending on the material used.',
   },
   {
     no: '06',
-    title: 'Low maintenance',
-    text: 'Never needs repainting — an occasional wipe keeps it looking new for years.',
+    title: 'Easy to maintain',
+    text: 'The surface is easy to clean and can be washed or disinfected without aggressive cleaning products.',
   },
 ]
 
 export const reasons = [
   {
-    title: 'Experience since 2017',
-    text: 'Our team has been installing stretch ceilings since 2017 — that hands‑on experience now serves Vancouver and the Lower Mainland.',
+    title: 'Stretch ceiling experience since 2017',
+    text: 'Our team has been working with stretch ceiling systems since 2017, bringing years of hands‑on installation experience to projects across Metro Vancouver.',
   },
   {
     title: 'Operated by Great Home Renovations Ltd',
-    text: 'You deal with a registered company and the same team from quote to final walkthrough.',
+    text: 'SkyLine Stretch Ceilings operates under Great Home Renovations Ltd, providing one point of contact from estimate through installation.',
   },
   {
     title: 'Lighting specialists',
     text: 'From single LED lines to track systems and translucent panels, integrated light is what we do best.',
   },
   {
-    title: 'Transparent pricing',
-    text: 'Clear, itemised quotes with no surprises. What we measure is what you pay.',
+    title: 'Transparent project pricing',
+    text: 'Pricing is based on your space, lighting choices and installation complexity, with a clear estimate before the project begins.',
   },
   {
-    title: 'Certified, fire‑rated film',
-    text: 'We install Laqfoil PVC and Descor polyester membranes carrying Class 1 fire ratings for Canada and the USA.',
+    // Deliberately per-material: ratings differ between the PVC and the
+    // polyester systems, so no blanket Class 1 claim here.
+    title: 'Fire‑rated materials',
+    text: 'We use Laqfoil PVC and Descor polyester membrane systems with documented fire ratings specific to each material.',
   },
   {
-    title: '15‑year warranty',
-    text: 'Backed by a 15‑year warranty — 10 years on materials and 3 years on installation.',
+    title: '10‑year warranty',
+    text: 'Quality materials and professional installation backed by up to a 10‑year warranty.',
   },
 ]
 
@@ -214,7 +226,7 @@ export const steps = [
   {
     no: '04',
     title: 'Installation',
-    text: 'Our crew installs cleanly in a single visit, integrating lights and fixtures.',
+    text: 'Our crew installs the ceiling cleanly and integrates the selected lighting and fixtures with minimal dust and disruption.',
   },
   {
     no: '05',
@@ -223,23 +235,26 @@ export const steps = [
   },
 ]
 
-// PLACEHOLDER — the brief confirms no completed Canadian projects and no
-// reviews yet. Replace with real, attributable reviews or remove the whole
-// Reviews section before launch. See README "Brief cross-check".
+// ⚠️ PLACEHOLDER — INVENTED. The brief confirms no completed Canadian
+// projects and no reviews yet, so none of these people exist. They are here
+// only so the layout can be reviewed. Replace with real, attributable reviews
+// or delete the Reviews section (and its nav entry) before launch — shipping
+// these as genuine testimonials is misrepresentation under Canada's
+// Competition Act. See README "Brief cross-check".
 export const reviews = [
   {
     text: 'From the quote to the install, everything was on time and spotless. The gloss ceiling completely transformed our kitchen.',
-    name: 'Client Name',
+    name: 'Sarah M.',
     location: 'Coquitlam, BC',
   },
   {
     text: 'The translucent ceiling in our basement theatre is stunning. Professional crew, tidy work, done in an afternoon.',
-    name: 'Client Name',
+    name: 'Daniel K.',
     location: 'Port Moody, BC',
   },
   {
     text: 'Honest pricing and beautiful work. We’ve already recommended SkyLine to two neighbours.',
-    name: 'Client Name',
+    name: 'Priya S.',
     location: 'Burnaby, BC',
   },
 ]
@@ -251,7 +266,7 @@ export const faqs = [
   },
   {
     q: 'Will the ceiling sag over time?',
-    a: 'No. The membrane is tensioned edge‑to‑edge into a hidden track and stays taut and flat for decades — it does not droop or bag with age.',
+    a: 'A properly installed stretch ceiling is designed to remain tensioned and flat. Depending on the selected system, manufacturer warranty coverage may also include sagging or loss of membrane tension.',
   },
   {
     q: 'Is the material easy to tear?',
@@ -259,7 +274,20 @@ export const faqs = [
   },
   {
     q: 'Is it safe around lighting and heat?',
-    a: 'Yes. We use certified, fire‑rated film and pair it with cool‑running LED and the correct fixtures, so lighting integrates safely.',
+    a: 'Yes, when the system is installed correctly. Fixtures and other equipment are mounted to the original structure above the membrane, with reinforced openings where required. Fire ratings vary by membrane system and material.',
+  },
+  {
+    // ⚠️ Standards quoted from the Laqfoil / Descor documentation cited in the
+    // brief. Confirm the certificates are on hand and that SkyLine is
+    // permitted to cite them before launch. See README "Brief cross-check".
+    // `a` also accepts an array — each entry renders as its own paragraph.
+    q: 'What fire ratings and standards do your materials meet?',
+    a: [
+      'Our membrane systems are available with documented fire ratings and certifications depending on the material selected.',
+      'Laqfoil PVC membranes: CAN-S102, ASTM E84, Class 1 fire rating for Canada and the USA, and EN 13501-1 B-s1,d0.',
+      'Descor polyester systems: DIN 4102-B1, NFPA 701, M1, IMO, and EN 13501-1 B-s2,d0.',
+      'Laqfoil systems may also use CSA- and UL-approved accessories. Specific documentation depends on the materials and components selected for your project.',
+    ],
   },
   {
     q: 'How much room height do I lose?',
@@ -271,7 +299,7 @@ export const faqs = [
   },
   {
     q: 'How is it different from a suspended (drop) ceiling?',
-    a: 'A suspended ceiling uses a visible metal grid and tiles. A stretch ceiling is one seamless membrane with no grid, no joints and a far more modern, finished look.',
+    a: 'A traditional drop ceiling typically uses a visible grid and individual panels. A stretch ceiling uses a tensioned membrane to create a continuous, modern surface that can also integrate different lighting solutions.',
   },
   {
     q: 'How long does installation take?',
@@ -283,7 +311,7 @@ export const faqs = [
   },
   {
     q: 'What warranty and areas do you cover?',
-    a: 'Every job carries a 15‑year warranty — 10 years on materials, 3 years on installation. We serve Vancouver and the Lower Mainland, from West Vancouver to Langley and White Rock.',
+    a: 'Every job carries up to a 10‑year warranty — 10 years on materials and 3 years on installation. We serve Vancouver and the Lower Mainland, from West Vancouver to Langley and White Rock.',
   },
 ]
 

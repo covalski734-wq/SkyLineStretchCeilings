@@ -3,6 +3,18 @@ import { reviews } from '../data.js'
 
 const GAP = 22
 
+/** Generic profile silhouette — stands in until real client photos exist. */
+function AvatarPlaceholder() {
+  return (
+    <div className="rev-card__avatar" aria-hidden="true">
+      <svg viewBox="0 0 40 40" focusable="false">
+        <circle cx="20" cy="15.5" r="6.6" />
+        <path d="M20 24.4c-7.1 0-12.9 4.5-12.9 10.1V40h25.8v-5.5c0-5.6-5.8-10.1-12.9-10.1Z" />
+      </svg>
+    </div>
+  )
+}
+
 export default function Reviews() {
   const trackRef = useRef(null)
   const [active, setActive] = useState(0)
@@ -53,7 +65,7 @@ export default function Reviews() {
               </div>
               <p className="rev-card__text">“{r.text}”</p>
               <div className="rev-card__who">
-                <div className="rev-card__avatar" />
+                <AvatarPlaceholder />
                 <div>
                   <div className="rev-card__name">{r.name}</div>
                   <div className="rev-card__loc">{r.location}</div>

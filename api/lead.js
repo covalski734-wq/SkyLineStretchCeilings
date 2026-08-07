@@ -13,11 +13,18 @@ const MIN_SCORE = 0.3
 
 const LIMITS = {
   name: 120,
-  phone: 60,
-  email: 160,
+  contactValue: 160,
   message: 2000,
   utm: 200,
 }
+
+const CONTACT_METHODS = {
+  whatsapp: 'WhatsApp',
+  phone: 'Phone',
+  email: 'Email',
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const UTM_KEYS = [
   'utm_source',
@@ -33,6 +40,20 @@ function escapeHtml(value) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+}
+
+/** Same, plus quotes — safe to drop inside an href="…". */
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/"/g, '&quot;')
+}
+
+/** Makes the lead one tap to answer from Telegram. */
+function contactLink(method, value) {
+  const digits = value.replace(/\D/g, '')
+  if (method === 'whatsapp' && digits) return `https://wa.me/${digits}`
+  if (method === 'phone' && digits) return `tel:+${digits}`
+  if (method === 'email') return `mailto:${escapeAttr(value)}`
+  return null
 }
 
 function field(value, max) {
@@ -63,12 +84,22 @@ export default async function handler(req, res) {
   }
 
   const name = field(body.name, LIMITS.name)
-  const phone = field(body.phone, LIMITS.phone)
-  const email = field(body.email, LIMITS.email)
+  const method = field(body.contact_method, 20).toLowerCase()
+  const contactValue = field(body.contact_value, LIMITS.contactValue)
   const message = field(body.message, LIMITS.message)
 
-  if (!name || !phone) {
+  if (!name || !contactValue || !CONTACT_METHODS[method]) {
     return res.status(400).json({ message: 'Missing required fields' })
+  }
+
+  // Re-check the format server-side; the client validation is only UX.
+  const contactOk =
+    method === 'email'
+      ? EMAIL_RE.test(contactValue)
+      : /^\d{10,15}$/.test(contactValue.replace(/\D/g, ''))
+
+  if (!contactOk) {
+    return res.status(400).json({ message: 'Invalid contact details' })
   }
 
   // reCAPTCHA v3 — optional: skip when the token or the secret is absent.
@@ -113,12 +144,17 @@ export default async function handler(req, res) {
     .filter(Boolean)
     .join('\n')
 
+  const href = contactLink(method, contactValue)
+  const shownContact = href
+    ? `<a href="${href}">${escapeHtml(contactValue)}</a>`
+    : escapeHtml(contactValue)
+
   const lines = [
     '<b>📩 New Lead — SkyLine Stretch Ceilings</b>',
     '',
     `<b>Name:</b> ${escapeHtml(name)}`,
-    `<b>Phone:</b> ${escapeHtml(phone)}`,
-    email ? `<b>Email:</b> ${escapeHtml(email)}` : '',
+    `<b>Preferred contact:</b> ${CONTACT_METHODS[method]}`,
+    `<b>${CONTACT_METHODS[method]}:</b> ${shownContact}`,
     message ? `<b>Message:</b> ${escapeHtml(message)}` : '',
   ].filter(Boolean)
 

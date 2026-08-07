@@ -18,7 +18,7 @@ export default function HeroDark() {
 
           <p className="hero-a__sub">
             Premium stretch ceilings with integrated LED lighting — perfectly
-            flat, installed clean in a single day, and backed by a 15‑year
+            flat, installed clean in a single day, and backed by a 10‑year
             warranty.
           </p>
 

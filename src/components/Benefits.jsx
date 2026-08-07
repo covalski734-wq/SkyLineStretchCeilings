@@ -5,7 +5,7 @@ export default function Benefits() {
     <section id="benefits" className="section">
       <div className="container" data-reveal>
         <div className="section-head">
-          <div className="eyebrow">Why they last</div>
+          <div className="eyebrow">Why stretch ceiling</div>
           <h2 className="h2">Built to perform, made to impress</h2>
         </div>
 

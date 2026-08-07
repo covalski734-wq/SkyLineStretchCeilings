@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { nav, site } from '../data.js'
 
 export default function Footer() {
@@ -23,9 +24,9 @@ export default function Footer() {
             <div className="site-footer__title">Explore</div>
             <div className="site-footer__col">
               {nav.map((link) => (
-                <a key={link.href} href={link.href}>
+                <Link key={link.href} to={link.href}>
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -70,6 +71,9 @@ export default function Footer() {
 
         <div className="site-footer__base">
           <span>© 2026 {site.name}. All rights reserved.</span>
+          <Link className="site-footer__legal-link" to="/privacy">
+            Privacy Policy
+          </Link>
           <span>{site.legal}</span>
         </div>
       </div>

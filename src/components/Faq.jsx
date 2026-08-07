@@ -39,14 +39,24 @@ export default function Faq() {
                   </span>
                 </button>
 
+                {/* Auto-height rather than a fixed max-height: the longest
+                    answers would otherwise be clipped on narrow screens. */}
                 <div
-                  className="acc-panel"
-                  style={{
-                    maxHeight: isOpen ? '340px' : '0px',
-                    opacity: isOpen ? 1 : 0,
-                  }}
+                  className={`acc-panel acc-panel--auto${
+                    isOpen ? ' is-open' : ''
+                  }`}
                 >
-                  <p className="faq-item__a">{f.a}</p>
+                  {/* Clip layer carries no padding — a 0fr grid row collapses
+                      the height but still paints the padding of its child. */}
+                  <div className="faq-item__clip">
+                    <div className="faq-item__body">
+                      {(Array.isArray(f.a) ? f.a : [f.a]).map((para) => (
+                        <p key={para} className="faq-item__a">
+                          {para}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             )

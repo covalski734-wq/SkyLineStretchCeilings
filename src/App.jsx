@@ -1,38 +1,51 @@
-import Header from './components/Header.jsx'
-import HeroDark from './components/HeroDark.jsx'
-import About from './components/About.jsx'
-import Installation from './components/Installation.jsx'
-import CeilingTypes from './components/CeilingTypes.jsx'
-import Portfolio from './components/Portfolio.jsx'
-import Benefits from './components/Benefits.jsx'
-import WhyUs from './components/WhyUs.jsx'
-import Process from './components/Process.jsx'
-import Reviews from './components/Reviews.jsx'
-import Faq from './components/Faq.jsx'
-import ServiceArea from './components/ServiceArea.jsx'
-import Contact from './components/Contact.jsx'
-import Footer from './components/Footer.jsx'
+import { useEffect, useRef } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
-import { useScrollReveal } from './hooks/useScrollReveal.js'
+import Header from './components/Header.jsx'
+import Footer from './components/Footer.jsx'
+import Home from './components/Home.jsx'
+import PrivacyPolicy from './components/PrivacyPolicy.jsx'
+
+/**
+ * A router does not restore scroll for us: without this you land halfway down
+ * the privacy policy after clicking the footer link from the bottom of the
+ * landing page. Honours a hash target when there is one.
+ */
+function useRouteScroll() {
+  const { pathname, hash } = useLocation()
+  const previousPath = useRef(null)
+
+  useEffect(() => {
+    // Changing route should feel like a page load — jump. Moving between
+    // anchors on the page we are already on should glide. Smooth-scrolling a
+    // route change also loses the race: the landing page unmounts mid-animation
+    // and the scroll never reaches the top.
+    const changedRoute = previousPath.current !== pathname
+    previousPath.current = pathname
+    const behavior = changedRoute ? 'instant' : 'smooth'
+
+    if (hash) {
+      const target = document.querySelector(hash)
+      if (target) {
+        target.scrollIntoView({ behavior })
+        return
+      }
+    }
+    window.scrollTo({ top: 0, behavior })
+  }, [pathname, hash])
+}
 
 export default function App() {
-  useScrollReveal()
+  useRouteScroll()
 
   return (
     <>
       <Header />
-      <HeroDark />
-      <About />
-      <Installation />
-      <CeilingTypes />
-      <Portfolio />
-      <Benefits />
-      <WhyUs />
-      <Process />
-      <Reviews />
-      <Faq />
-      <ServiceArea />
-      <Contact />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       <Footer />
     </>
   )

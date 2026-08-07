@@ -17,16 +17,63 @@ No API keys, accounts or environment variables are needed — clone and run.
 ## Structure
 
 ```
-index.html                 Google Fonts (Marcellus + Manrope), #root
+index.html                 App shell
+vercel.json                SPA rewrite (every non-API path -> index.html)
 public/assets/             Photography and logos, served from /assets/*
+api/lead.js                Serverless contact-form handler
 src/
-  main.jsx                 React entry
-  App.jsx                  Section order + hero variant state
+  main.jsx                 Entry: BrowserRouter + App
+  App.jsx                  Header, routes, footer, route scrolling
   styles.css               All styling, organised section by section
   data.js                  Every piece of copy: nav, services, FAQ, reviews…
+  geo/service-area.json    Municipal boundaries for the map
   hooks/useScrollReveal.js IntersectionObserver fade-in
-  components/              One component per page section
+  lib/                     reCAPTCHA + UTM helpers
+  components/
+    Home.jsx               The landing page, section by section
+    PrivacyPolicy.jsx      /privacy
+    …                      One component per page section
 ```
+
+### Routing
+
+Single-page app on `react-router-dom`. Header and footer sit outside
+`<Routes>`, so they persist across navigation instead of remounting.
+
+```
+/          Home
+/privacy   PrivacyPolicy
+*          redirect to /
+```
+
+Things worth knowing:
+
+- **`vercel.json` is required.** A deep link straight to `/privacy` is a real
+  HTTP request; without the rewrite the host returns 404 before React ever
+  loads. `/api/*` is excluded so the serverless function still resolves.
+  Vite's dev and preview servers do this fallback on their own.
+- **`useRouteScroll` in `App.jsx`** scrolls on navigation — a router does not.
+  Without it you land partway down the privacy policy after clicking the
+  footer link from the bottom of the landing page. It honours a hash target
+  (`/#ceilings`) when there is one, otherwise scrolls to the top.
+- **Nav links are root-relative** (`/#ceilings`) and rendered with `<Link>`, so
+  they work from any route.
+- **`useScrollReveal` lives in `Home.jsx`**, not `App.jsx`, so the observer is
+  rebuilt when the landing page mounts again after visiting another route.
+
+To add a page: create the component, add a `<Route>` in `App.jsx`, and add its
+path to `PAGES` in `vite.config.js` so it lands in the sitemap.
+
+### robots.txt and sitemap.xml
+
+Both are generated at build time by the `seo-files` plugin in
+`vite.config.js`, from `VITE_SITE_URL`.
+
+Set `VITE_SITE_URL` to the production origin with no trailing slash
+(e.g. `https://skylineceilings.ca`). Without it the build still emits
+`robots.txt`, but **skips `sitemap.xml` and prints a warning** — a sitemap
+listing a domain you do not own is rejected by search engines, so no file is
+better than a guessed one.
 
 Copy lives in `src/data.js`, not in the components — editing text, phone
 numbers, cities or FAQ entries should never mean touching JSX.
@@ -101,6 +148,35 @@ config** — the project does not need to be Next.js.
 `src/components/Contact.jsx` POSTs to `/api/lead` and handles the
 sending / sent / error states.
 
+### Payload
+
+```jsonc
+{
+  "name":           "Ivan Test",
+  "contact_method": "whatsapp",       // whatsapp | phone | email
+  "contact_value":  "+1 604 555 0123",
+  "message":        "",               // optional
+  "website":        "",               // honeypot, must stay empty
+  "recaptchaToken": "…",              // optional
+  "utm_source":     "…"               // plus the other utm_* keys
+}
+```
+
+The visitor picks how they want to be contacted (WhatsApp preselected), so the
+form collects **one** contact value rather than separate phone and email
+fields. Validation matches the method — email pattern for `email`, 10–15 digits
+for the phone-based ones — and runs on both sides: the client for instant
+feedback, the API again because client checks are only UX. Switching method
+clears the field, since what counts as valid has changed.
+
+The Telegram message links the contact value (`wa.me` / `tel:` / `mailto:`), so
+a lead is one tap to answer.
+
+Phone validation is deliberately format-agnostic rather than a full
+international parser — the service area is Metro Vancouver, so a country-code
+picker (`react-phone-input-2` + `libphonenumber-js`) would add roughly 80 kB
+gzip for no benefit here. Swap it in if the service area ever widens.
+
 ### Setup
 
 Copy `.env.example` to `.env` and fill in:
@@ -174,7 +250,7 @@ client's call, and all of them are live claims on the page today.
 - **Experience.** "Since 2017" is on the page. Actual trading was Ukraine 2017–2022, none in Canada. The earlier "A decade of experience" heading was softened to "Experience since 2017".
 - **Business address.** The page says "Based in Vancouver"; the registered address is 398 Hickey Dr, Coquitlam. The client's mark-up asks for Vancouver framing, so it was left as is — but the home address is deliberately not published.
 - **Hours.** The brief gives only "8AM – 6PM" with no days. The invented Mon–Fri / Sat / Sun breakdown was removed; add days back once confirmed.
-- **LED warranty.** Brief marks it "треба уточнити". The page claims 15 years total (10 materials + 3 installation) and stays silent on LED — keep it that way until confirmed.
+- **LED warranty.** Brief marks it "треба уточнити". The page states up to 10 years (10 on materials, 3 on installation) and stays silent on LED — keep it that way until confirmed. Note the brief's own summary line says "Загальна гарантія 15 років"; the site deliberately uses the lower, per-component figure.
 
 ### Applied from the brief
 

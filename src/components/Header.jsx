@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { nav, site } from '../data.js'
 
 export default function Header() {
@@ -7,7 +8,7 @@ export default function Header() {
   return (
     <header id="top" className="site-header">
       <div className="site-header__inner">
-        <a href="#top" className="logo-box">
+        <Link to="/" className="logo-box">
           <img
             src="/assets/logo-white.png"
             alt={site.name}
@@ -15,13 +16,13 @@ export default function Header() {
             width="916"
             height="645"
           />
-        </a>
+        </Link>
 
         <nav className="nav-links">
           {nav.map((link) => (
-            <a key={link.href} href={link.href}>
+            <Link key={link.href} to={link.href}>
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -29,14 +30,9 @@ export default function Header() {
           <a href={site.phoneHref} className="header-phone">
             {site.phone}
           </a>
-          <a
-            href={site.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn--primary btn--header"
-          >
+          <Link to="/#contact" className="btn btn--primary btn--header">
             Free Quote
-          </a>
+          </Link>
           <button
             type="button"
             className={`nav-burger${open ? ' is-open' : ''}`}
@@ -62,14 +58,14 @@ export default function Header() {
       >
         <div className="mobile-nav__inner">
           {nav.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
+              to={link.href}
               tabIndex={open ? 0 : -1}
               onClick={() => setOpen(false)}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
