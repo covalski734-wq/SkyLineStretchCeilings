@@ -50,33 +50,38 @@ export const aboutChips = [
 ]
 
 // Rendered as a 4-column grid — 8 cards fill two even rows.
+// `bestseller: true` shows a badge on the card; currently the whole first row.
 export const ceilingTypes = [
   // Row 1
   {
     name: 'Glossy',
     img: '/assets/g13.jpg',
+    bestseller: true,
     desc: 'A mirror‑like reflective finish that makes the room feel larger and brighter. A modern option for creating a more open, spacious interior.',
   },
   {
     name: 'Translucent',
     img: '/assets/g20.jpg',
+    bestseller: true,
     desc: 'A light‑diffusing membrane lit from behind, spreading soft, even light across the surface with no visible fixtures. Installed in roughly two days.',
   },
   {
     name: 'LED Light Lines',
     img: '/assets/g09.png',
+    bestseller: true,
     desc: 'Integrated LED lines create clean, precise lines of light across the ceiling and can be arranged to complement the geometry and design of the room.',
   },
+  {
+    name: 'Starry Sky',
+    img: '/assets/g24.jpg',
+    bestseller: true,
+    desc: 'A fibre‑optic stretch ceiling that creates a realistic night‑sky effect with tiny points of light. Ideal for bedrooms, children’s rooms and home theatres. Typically installed in 1–2 days.',
+  },
+  // Row 2
   {
     name: 'Track Lighting',
     img: '/assets/g07.jpg',
     desc: 'Integrated track lighting combines a clean ceiling design with flexible lighting that can be adjusted after installation.',
-  },
-  // Row 2
-  {
-    name: 'Starry Sky',
-    img: '/assets/g24.jpg',
-    desc: 'A fibre‑optic stretch ceiling that creates a realistic night‑sky effect with tiny points of light. Ideal for bedrooms, children’s rooms and home theatres. Typically installed in 1–2 days.',
   },
   {
     name: 'Matte',
@@ -181,19 +186,20 @@ export const benefits = [
 export const reasons = [
   {
     title: 'Stretch ceiling experience since 2017',
-    text: 'Our team has been working with stretch ceiling systems since 2017, bringing years of hands‑on installation experience to projects across Metro Vancouver.',
+    text: 'Our team has been working with stretch ceiling systems since 2017, bringing years of hands‑on installation experience to projects.',
   },
   {
     title: 'Operated by Great Home Renovations Ltd',
-    text: 'SkyLine Stretch Ceilings operates under Great Home Renovations Ltd, providing one point of contact from estimate through installation.',
+    text: 'Skyline Stretch Ceilings is a brand operated by Great Home Renovations Ltd., providing one point of contact from estimate through installation.',
   },
   {
     title: 'Lighting specialists',
     text: 'From single LED lines to track systems and translucent panels, integrated light is what we do best.',
   },
   {
-    title: 'Transparent project pricing',
-    text: 'Pricing is based on your space, lighting choices and installation complexity, with a clear estimate before the project begins.',
+    // The six problems clients actually arrive with, per the client's own list.
+    title: 'Popcorn, cracks and dim rooms — solved',
+    text: 'Popcorn texture, hairline cracks and uneven surfaces disappear behind one flat membrane, integrated LED replaces dim lighting, and you get a modern finish without living through a full renovation.',
   },
   {
     // Deliberately per-material: ratings differ between the PVC and the
@@ -241,19 +247,22 @@ export const steps = [
 // or delete the Reviews section (and its nav entry) before launch — shipping
 // these as genuine testimonials is misrepresentation under Canada's
 // Competition Act. See README "Brief cross-check".
+// Each one is written to close a different problem from the client's list:
+// popcorn ceilings, cracks and unevenness, weak lighting, dated look, and the
+// dread of a messy renovation.
 export const reviews = [
   {
-    text: 'From the quote to the install, everything was on time and spotless. The gloss ceiling completely transformed our kitchen.',
+    text: 'We had popcorn ceilings through the whole main floor and were dreading the scraping and the dust. They covered it in a day — barely any mess, and the kitchen feels twice as bright.',
     name: 'Sarah M.',
     location: 'Coquitlam, BC',
   },
   {
-    text: 'The translucent ceiling in our basement theatre is stunning. Professional crew, tidy work, done in an afternoon.',
+    text: 'Our living room ceiling had cracks that came back after every repaint, and it was never really level. Now it is perfectly flat and the LED lines make the whole room look modern.',
     name: 'Daniel K.',
     location: 'Port Moody, BC',
   },
   {
-    text: 'Honest pricing and beautiful work. We’ve already recommended SkyLine to two neighbours.',
+    text: 'The basement was always dim and dated. The translucent panel and light lines completely changed how the space feels, and we never had to move out for a renovation.',
     name: 'Priya S.',
     location: 'Burnaby, BC',
   },
@@ -264,10 +273,10 @@ export const faqs = [
     q: 'Does a stretch ceiling look like plastic?',
     a: 'No. A matte finish looks like perfectly painted drywall, while gloss looks like polished lacquer. Up close it reads as a clean, high‑end surface — not cheap plastic.',
   },
-  {
-    q: 'Will the ceiling sag over time?',
-    a: 'A properly installed stretch ceiling is designed to remain tensioned and flat. Depending on the selected system, manufacturer warranty coverage may also include sagging or loss of membrane tension.',
-  },
+  // {
+  //   q: 'Will the ceiling sag over time?',
+  //   a: 'A properly installed stretch ceiling is designed to remain tensioned and flat. Depending on the selected system, manufacturer warranty coverage may also include sagging or loss of membrane tension.',
+  // },
   {
     q: 'Is the material easy to tear?',
     a: 'In everyday use, no. The film is tough and holds its tension; only a deliberate cut from a sharp object will damage it, and a single panel can usually be repaired or replaced without dismantling the whole ceiling.',
@@ -298,8 +307,8 @@ export const faqs = [
     a: 'The membrane is a finish, not a structural surface, so nothing hangs from it. Fixtures, fans and speakers are mounted to the original ceiling above, and every point where something passes through the membrane is reinforced with a ring or collar.',
   },
   {
-    q: 'How is it different from a suspended (drop) ceiling?',
-    a: 'A traditional drop ceiling typically uses a visible grid and individual panels. A stretch ceiling uses a tensioned membrane to create a continuous, modern surface that can also integrate different lighting solutions.',
+    q: 'What’s the difference between a stretch ceiling and a drop ceiling?',
+    a: 'A traditional drop ceiling uses a visible grid and individual panels. A stretch ceiling uses a tensioned membrane to create a seamless, modern surface that can also integrate lighting.',
   },
   {
     q: 'How long does installation take?',

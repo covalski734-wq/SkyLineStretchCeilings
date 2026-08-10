@@ -153,8 +153,9 @@ sending / sent / error states.
 ```jsonc
 {
   "name":           "Ivan Test",
-  "contact_method": "whatsapp",       // whatsapp | phone | email
-  "contact_value":  "+1 604 555 0123",
+  "phone":          "+1 604 555 0123",
+  "email":          "",               // optional
+  "postal_code":    "V6B 1A1",
   "message":        "",               // optional
   "website":        "",               // honeypot, must stay empty
   "recaptchaToken": "…",              // optional
@@ -162,15 +163,16 @@ sending / sent / error states.
 }
 ```
 
-The visitor picks how they want to be contacted (WhatsApp preselected), so the
-form collects **one** contact value rather than separate phone and email
-fields. Validation matches the method — email pattern for `email`, 10–15 digits
-for the phone-based ones — and runs on both sides: the client for instant
-feedback, the API again because client checks are only UX. Switching method
-clears the field, since what counts as valid has changed.
+Required: `name`, `phone`, `postal_code`. Email is optional but validated when
+filled. Postal code is required because it tells you whether the address is in
+the service area before anyone drives out — relax it by dropping the check in
+`validate()` in `Contact.jsx` and the `!postal` guard in `api/lead.js`.
 
-The Telegram message links the contact value (`wa.me` / `tel:` / `mailto:`), so
-a lead is one tap to answer.
+Every format is checked on both sides: the client for instant feedback, the API
+again because client checks are only UX.
+
+The Telegram message turns the phone into `tel:` **and** `wa.me` links and the
+email into a `mailto:`, so a lead is one tap to answer.
 
 Phone validation is deliberately format-agnostic rather than a full
 international parser — the service area is Metro Vancouver, so a country-code

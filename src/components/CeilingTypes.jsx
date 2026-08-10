@@ -29,6 +29,12 @@ export default function CeilingTypes() {
                     alt={`${t.name} stretch ceiling`}
                     className="ph-img"
                   />
+                  {t.bestseller && (
+                    <span className="badge">
+                      <span className="badge__mark" aria-hidden="true" />
+                      Bestseller
+                    </span>
+                  )}
                 </div>
 
                 <button

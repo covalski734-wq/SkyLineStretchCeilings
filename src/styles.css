@@ -716,6 +716,34 @@ img {
   overflow: hidden;
   background: #e9e5db;
 }
+
+/* Sits over photography, so it carries its own shadow to stay legible on a
+   light or a dark image. */
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border-radius: 2px;
+  background: var(--accent);
+  color: var(--ink-deep);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px -8px rgba(18, 21, 26, 0.75);
+}
+.badge__mark {
+  width: 6px;
+  height: 6px;
+  background: var(--ink-deep);
+  transform: rotate(45deg);
+}
 .type-card__toggle {
   all: unset;
   box-sizing: border-box;
@@ -1300,92 +1328,9 @@ img {
   color: #8f2f20;
 }
 
-/* Contact-method chooser fused into the field it labels: one border, one
-   focus ring, one row. */
-.combo {
-  display: flex;
-  align-items: stretch;
-  border: 1px solid rgba(26, 29, 34, 0.18);
-  border-radius: 2px;
-  background: #faf9f5;
-  overflow: hidden;
-  transition: border-color 0.25s ease, background 0.25s ease;
-}
-.combo:focus-within {
-  border-color: var(--accent);
-  background: #fff;
-}
-.combo.is-invalid {
-  border-color: #c0402c;
-  background: #fdf6f4;
-}
-
-.combo__select {
-  position: relative;
-  display: flex;
-  flex-shrink: 0;
-}
-/* hairline divider between the picker and the value */
-.combo__select::before {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 9px;
-  bottom: 9px;
-  width: 1px;
-  background: rgba(26, 29, 34, 0.14);
-}
-/* chevron */
-.combo__select::after {
-  content: '';
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  margin-top: -5px;
-  border-right: 1.5px solid #7a7d84;
-  border-bottom: 1.5px solid #7a7d84;
-  transform: rotate(45deg);
-  pointer-events: none;
-  transition: border-color 0.2s ease;
-}
-.combo__select:hover::after {
-  border-color: var(--accent-dark);
-}
-.combo__select select {
-  appearance: none;
-  -webkit-appearance: none;
-  border: 0;
-  background: transparent;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: #33363c;
-  padding: 15px 36px 15px 16px;
-  cursor: pointer;
-  outline: none;
-}
-.combo__select select:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
-
-.combo__input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  background: transparent;
-  font: inherit;
-  font-size: 15px;
-  padding: 15px 16px;
-  outline: none;
-}
-/* The global input:focus rule paints a white background and an accent border
-   with !important — inside the combo that would show as a seam. */
-.combo__input:focus {
-  background: transparent !important;
-  border-color: transparent !important;
+/* Fields sitting side by side own their spacing through the row. */
+.form__row .form__field {
+  margin-bottom: 0;
 }
 .form__submit {
   width: 100%;
@@ -1443,6 +1388,9 @@ img {
 .form__whatsapp {
   display: inline-flex;
   align-items: center;
+  /* Centres the label once it wraps to two lines on narrow screens. */
+  justify-content: center;
+  text-align: center;
   gap: 9px;
   color: var(--ink-deep);
   font-size: 14px;

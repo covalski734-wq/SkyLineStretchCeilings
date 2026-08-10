@@ -13,18 +13,15 @@ const MIN_SCORE = 0.3
 
 const LIMITS = {
   name: 120,
-  contactValue: 160,
+  phone: 60,
+  email: 160,
+  postal: 10,
   message: 2000,
   utm: 200,
 }
 
-const CONTACT_METHODS = {
-  whatsapp: 'WhatsApp',
-  phone: 'Phone',
-  email: 'Email',
-}
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const POSTAL_RE = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/
 
 const UTM_KEYS = [
   'utm_source',
@@ -48,12 +45,11 @@ function escapeAttr(value) {
 }
 
 /** Makes the lead one tap to answer from Telegram. */
-function contactLink(method, value) {
-  const digits = value.replace(/\D/g, '')
-  if (method === 'whatsapp' && digits) return `https://wa.me/${digits}`
-  if (method === 'phone' && digits) return `tel:+${digits}`
-  if (method === 'email') return `mailto:${escapeAttr(value)}`
-  return null
+function phoneLinks(phone) {
+  const digits = phone.replace(/\D/g, '')
+  const shown = escapeHtml(phone)
+  if (!digits) return shown
+  return `<a href="tel:+${digits}">${shown}</a> · <a href="https://wa.me/${digits}">WhatsApp</a>`
 }
 
 function field(value, max) {
@@ -84,22 +80,24 @@ export default async function handler(req, res) {
   }
 
   const name = field(body.name, LIMITS.name)
-  const method = field(body.contact_method, 20).toLowerCase()
-  const contactValue = field(body.contact_value, LIMITS.contactValue)
+  const phone = field(body.phone, LIMITS.phone)
+  const email = field(body.email, LIMITS.email)
+  const postal = field(body.postal_code, LIMITS.postal)
   const message = field(body.message, LIMITS.message)
 
-  if (!name || !contactValue || !CONTACT_METHODS[method]) {
+  if (!name || !phone || !postal) {
     return res.status(400).json({ message: 'Missing required fields' })
   }
 
-  // Re-check the format server-side; the client validation is only UX.
-  const contactOk =
-    method === 'email'
-      ? EMAIL_RE.test(contactValue)
-      : /^\d{10,15}$/.test(contactValue.replace(/\D/g, ''))
-
-  if (!contactOk) {
-    return res.status(400).json({ message: 'Invalid contact details' })
+  // Re-check the formats server-side; the client validation is only UX.
+  if (!/^\d{10,15}$/.test(phone.replace(/\D/g, ''))) {
+    return res.status(400).json({ message: 'Invalid phone number' })
+  }
+  if (email && !EMAIL_RE.test(email)) {
+    return res.status(400).json({ message: 'Invalid email address' })
+  }
+  if (!POSTAL_RE.test(postal)) {
+    return res.status(400).json({ message: 'Invalid postal code' })
   }
 
   // reCAPTCHA v3 — optional: skip when the token or the secret is absent.
@@ -144,17 +142,15 @@ export default async function handler(req, res) {
     .filter(Boolean)
     .join('\n')
 
-  const href = contactLink(method, contactValue)
-  const shownContact = href
-    ? `<a href="${href}">${escapeHtml(contactValue)}</a>`
-    : escapeHtml(contactValue)
-
   const lines = [
     '<b>📩 New Lead — SkyLine Stretch Ceilings</b>',
     '',
     `<b>Name:</b> ${escapeHtml(name)}`,
-    `<b>Preferred contact:</b> ${CONTACT_METHODS[method]}`,
-    `<b>${CONTACT_METHODS[method]}:</b> ${shownContact}`,
+    `<b>Phone:</b> ${phoneLinks(phone)}`,
+    email
+      ? `<b>Email:</b> <a href="mailto:${escapeAttr(email)}">${escapeHtml(email)}</a>`
+      : '',
+    `<b>Postal code:</b> ${escapeHtml(postal.toUpperCase())}`,
     message ? `<b>Message:</b> ${escapeHtml(message)}` : '',
   ].filter(Boolean)
 
