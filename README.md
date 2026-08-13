@@ -148,7 +148,7 @@ the same commit deploys to Vercel and to Cloudflare Pages with no edits:
 shared/lead.js            the whole handler: validation, reCAPTCHA, Telegram
                           in:  { body, env }   out: { status, body }
 api/lead.js               Vercel adapter        (req, res)
-functions/api/lead.js     Cloudflare adapter    (context) -> Response
+dist/_worker.js           Cloudflare adapter    generated at build time
 vite.config.js devApi()   local adapter         connect middleware
 ```
 
@@ -218,14 +218,30 @@ Both targets build with `npm run build` and publish `dist`.
 
 | | Vercel | Cloudflare Pages |
 | --- | --- | --- |
-| Function source | `api/` | `functions/` |
+| Function source | `api/` (native) | `dist/_worker.js` (emitted by the build) |
 | SPA fallback | `vercel.json` rewrite | `public/_redirects` |
-| Function routing | automatic | `public/_routes.json` (`/api/*` only) |
+| Worker routing | automatic | `public/_routes.json` (`/api/*` only) |
 
-Each host ignores the other's config files, so all four can sit in the repo at
-once. `_routes.json` keeps Cloudflare from invoking a Function for every static
-request, which also stops the `/*  /index.html  200` fallback from swallowing
+Each host ignores the other's config files, so they can all sit in the repo at
+once.
+
+**Why `_worker.js` and not the `functions/` directory.** The documented Pages
+approach is a `functions/api/lead.js` file, and that is what this project used
+first — but Pages never picked it up (`POST /api/lead` answered `405` with an
+empty body, i.e. the static asset server refusing the method, and `GET`
+returned `index.html`). Whether Pages finds `functions/` depends on project
+settings that are invisible from the repo. The build output directory is always
+published, whatever the deploy method, so the adapter is generated into
+`dist/_worker.js` instead and the problem cannot recur.
+
+`_routes.json` limits the Worker to `/api/*`. Everything else is served straight
+from static assets with `_redirects` applied, so the Worker is not in the path
+of normal page loads — and the `/*  /index.html  200` fallback cannot swallow
 `/api/lead`.
+
+`shared/lead.js` has no imports, so the build inlines it verbatim ahead of a
+short Worker entry — no bundler step and no extra dependency, and the core
+stays the single source of truth.
 
 ### Behaviour
 

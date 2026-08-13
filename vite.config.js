@@ -1,14 +1,70 @@
+import { readFile } from 'node:fs/promises'
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+
+const fromRoot = (path) => fileURLToPath(new URL(path, import.meta.url))
 
 /** Client-side routes that should end up in the sitemap. */
 const PAGES = ['/', '/privacy']
 
 /**
+ * Cloudflare adapter, emitted into the build output as dist/_worker.js.
+ *
+ * The documented `functions/` directory only works if Pages discovers it at the
+ * project root — which it did not here, and that is invisible from the repo.
+ * The output directory is always published, whatever the deploy method, so the
+ * worker goes there instead. public/_routes.json still limits it to /api/*, so
+ * static assets are served directly and never pass through this code.
+ *
+ * shared/lead.js has no imports of its own, so it is inlined verbatim rather
+ * than bundled — no extra tooling, and the core stays the single source of
+ * truth for Vercel, Cloudflare and dev alike.
+ */
+const WORKER_ENTRY = `
+function workerJson(payload, status) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  })
+}
+
+export default {
+  async fetch(request, env) {
+    if (new URL(request.url).pathname !== '/api/lead') {
+      // Safety net: _routes.json should stop static requests reaching here.
+      return env.ASSETS.fetch(request)
+    }
+    if (request.method !== 'POST') {
+      return workerJson(METHOD_NOT_ALLOWED.body, METHOD_NOT_ALLOWED.status)
+    }
+    const body = await request.json().catch(() => ({}))
+    const result = await handleLead({ body, env })
+    return workerJson(result.body, result.status)
+  },
+}
+`
+
+function cloudflareWorker() {
+  return {
+    name: 'cloudflare-worker',
+    apply: 'build',
+    async generateBundle() {
+      const core = await readFile(fromRoot('shared/lead.js'), 'utf8')
+      this.emitFile({
+        type: 'asset',
+        fileName: '_worker.js',
+        source: `${core}\n${WORKER_ENTRY}`,
+      })
+    },
+  }
+}
+
+/**
  * Neither host's function runtime exists during `npm run dev`, so this mounts
  * the shared core directly — a third, local adapter alongside api/lead.js
- * (Vercel) and functions/api/lead.js (Cloudflare). Loading the core rather
- * than either adapter means dev exercises the code both platforms run.
+ * (Vercel) and dist/_worker.js (Cloudflare). Loading the core rather than
+ * either adapter means dev exercises the code both platforms run.
  */
 function devApi() {
   return {
@@ -117,6 +173,6 @@ export default defineConfig(({ mode }) => {
     // Single page app: Vite's dev and preview servers fall back to index.html
     // for unknown paths, which is what react-router needs. Production gets the
     // same behaviour from the rewrite in vercel.json.
-    plugins: [react(), devApi(), seoFiles(siteUrl)],
+    plugins: [react(), devApi(), seoFiles(siteUrl), cloudflareWorker()],
   }
 })

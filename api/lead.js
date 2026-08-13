@@ -1,6 +1,6 @@
 // Vercel adapter. Vercel picks up /api automatically for any framework.
 // All the logic lives in shared/lead.js so Cloudflare Pages can run the exact
-// same code — see functions/api/lead.js.
+// same code — its adapter is generated into dist/_worker.js by vite.config.js.
 
 import { handleLead, METHOD_NOT_ALLOWED } from '../shared/lead.js'
 
