@@ -4,7 +4,7 @@ export default function Installation() {
       <div className="container split split-rev" data-reveal>
         <div className="media-frame media-frame--dark">
           <img
-            src="/assets/g01.jpg"
+            src="/assets/new/1.webp"
             alt="Clean, low-dust ceiling installation"
             className="ph-img"
           />
@@ -17,7 +17,7 @@ export default function Installation() {
           </h2>
 
           <p className="prose prose--light">
-            No puttying, sanding or painting. That means less dust, less
+            No mudding, sanding or painting. That means less dust, less
             mess and much less disruption to your home.
           </p>
           <p className="prose prose--light">

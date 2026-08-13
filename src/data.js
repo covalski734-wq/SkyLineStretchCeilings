@@ -55,7 +55,7 @@ export const ceilingTypes = [
   // Row 1
   {
     name: 'Glossy',
-    img: '/assets/g13.jpg',
+    img: '/assets/new/1.webp',
     bestseller: true,
     desc: 'A mirror‑like reflective finish that makes the room feel larger and brighter. A modern option for creating a more open, spacious interior.',
   },
@@ -67,7 +67,7 @@ export const ceilingTypes = [
   },
   {
     name: 'LED Light Lines',
-    img: '/assets/g09.png',
+    img: '/assets/new/2.jpg',
     bestseller: true,
     desc: 'Integrated LED lines create clean, precise lines of light across the ceiling and can be arranged to complement the geometry and design of the room.',
   },
@@ -84,9 +84,9 @@ export const ceilingTypes = [
     desc: 'Integrated track lighting combines a clean ceiling design with flexible lighting that can be adjusted after installation.',
   },
   {
-    name: 'Matte',
-    img: '/assets/g23.jpg',
-    desc: 'A smooth, non‑reflective finish that creates a clean, perfectly even surface and hides imperfections in the original ceiling. Typically installed in one day.',
+    name: 'Stretch walls',
+    img: '/assets/new/4.png',
+    desc: 'The same tensioned system applied to a wall — a perfectly flat surface that hides imperfections and can carry printed graphics or an integrated LED line. Fitted from one day.',
   },
   {
     name: 'Floating / Cove Lighting',
@@ -95,7 +95,7 @@ export const ceilingTypes = [
   },
   {
     name: 'Printed / Custom',
-    img: '/assets/g18.jpg',
+    img: '/assets/new/3.jpg',
     desc: 'Create a custom ceiling with virtually any image or graphic — from a sky effect to modern artwork. A distinctive option for residential and commercial interiors.',
   },
 ]
@@ -103,11 +103,11 @@ export const ceilingTypes = [
 // Offered per the brief but with no photography available yet — listed as
 // text rather than illustrated with unrelated images.
 export const alsoAvailable = [
+  'Matte',
   'Satin finish',
   'Fabric / polyester systems',
   'Multi‑level ceilings',
   'Acoustic / perforated',
-  'Stretch walls',
   'Repair & membrane replacement',
 ]
 
@@ -137,13 +137,13 @@ export const works = [
     img: '/assets/g04.jpg',
   },
   {
-    title: 'Translucent light panel',
+    title: 'Translucent light',
     tag: 'Residential',
     ratio: '4/3',
-    img: '/assets/g22.jpg',
+    img: '/assets/new/5.jpg',
   },
   {
-    title: 'Light‑line corridor',
+    title: 'Light‑line hallway',
     tag: 'Residential',
     ratio: '4/3',
     img: '/assets/g11.jpg',
@@ -159,17 +159,17 @@ export const benefits = [
   {
     no: '02',
     title: 'Built‑in lighting',
-    text: 'Integrate LED lines, track systems and translucent panels for a designer look — wired in cleanly.',
+    text: 'Integrate LED lines, track systems and translucent for a designer look — wired in cleanly.',
   },
   {
     no: '03',
     title: 'Fast, low‑dust install',
-    text: 'No puttying, sanding, painting or long drying. Most rooms are finished in a single day.',
+    text: 'No mudding, sanding, painting or long drying. Most rooms are finished in a single day.',
   },
   {
     no: '04',
     title: 'Hides everything',
-    text: 'Wiring, ducting, pipes and an old ceiling all disappear above the membrane.',
+    text: 'Wiring, ducting, pipes and an old ceiling all disappear above the PVC membrane.',
   },
   {
     no: '05',
@@ -203,9 +203,10 @@ export const reasons = [
   },
   {
     // Deliberately per-material: ratings differ between the PVC and the
-    // polyester systems, so no blanket Class 1 claim here.
+    // textile systems, so no blanket Class 1 claim here. Supplier names are
+    // kept off the public page at the client's request.
     title: 'Fire‑rated materials',
-    text: 'We use Laqfoil PVC and Descor polyester membrane systems with documented fire ratings specific to each material.',
+    text: 'We use Canadian and European materials with documented fire ratings specific to each material.',
   },
   {
     title: '10‑year warranty',
@@ -227,7 +228,7 @@ export const steps = [
   {
     no: '03',
     title: 'Manufacturing',
-    text: 'Your membrane is cut and prepared to the millimetre, typically 1–2 weeks from measurement.',
+    text: 'Your PVC or textile membrane is cut and prepared for your room, typically 1–2 weeks from measurement.',
   },
   {
     no: '04',
@@ -259,7 +260,7 @@ export const reviews = [
   {
     text: 'Our living room ceiling had cracks that came back after every repaint, and it was never really level. Now it is perfectly flat and the LED lines make the whole room look modern.',
     name: 'Daniel K.',
-    location: 'Port Moody, BC',
+    location: 'Port Coquitlam, BC',
   },
   {
     text: 'The basement was always dim and dated. The translucent panel and light lines completely changed how the space feels, and we never had to move out for a renovation.',
@@ -286,37 +287,29 @@ export const faqs = [
     a: 'Yes, when the system is installed correctly. Fixtures and other equipment are mounted to the original structure above the membrane, with reinforced openings where required. Fire ratings vary by membrane system and material.',
   },
   {
-    // ⚠️ Standards quoted from the Laqfoil / Descor documentation cited in the
-    // brief. Confirm the certificates are on hand and that SkyLine is
-    // permitted to cite them before launch. See README "Brief cross-check".
+    // ⚠️ Standards come from the supplier documentation cited in the brief.
+    // Supplier names are kept off the public page at the client's request —
+    // confirm the certificates are on hand before launch.
     // `a` also accepts an array — each entry renders as its own paragraph.
     q: 'What fire ratings and standards do your materials meet?',
     a: [
       'Our membrane systems are available with documented fire ratings and certifications depending on the material selected.',
-      'Laqfoil PVC membranes: CAN-S102, ASTM E84, Class 1 fire rating for Canada and the USA, and EN 13501-1 B-s1,d0.',
-      'Descor polyester systems: DIN 4102-B1, NFPA 701, M1, IMO, and EN 13501-1 B-s2,d0.',
-      'Laqfoil systems may also use CSA- and UL-approved accessories. Specific documentation depends on the materials and components selected for your project.',
+      'PVC membranes: CAN-S102, ASTM E84, Class 1 fire rating for Canada and the USA, and EN 13501-1 B-s1,d0.',
+      'Textile (polyester) systems: DIN 4102-B1, NFPA 701, M1, IMO, and EN 13501-1 B-s2,d0.',
+      'Systems may also use CSA- and UL-approved accessories. Specific documentation depends on the materials and components selected for your project.',
     ],
   },
   {
     q: 'How much room height do I lose?',
-    a: 'Less than you would expect. A standard PVC system usually sits a little under one inch below the original ceiling, and a Descor system can be as little as a quarter of an inch. A backlit translucent ceiling is the exception — it needs roughly six inches between the LED and the membrane so the light spreads evenly.',
-  },
-  {
-    q: 'Can the ceiling hold a light fixture or a fan?',
-    a: 'The membrane is a finish, not a structural surface, so nothing hangs from it. Fixtures, fans and speakers are mounted to the original ceiling above, and every point where something passes through the membrane is reinforced with a ring or collar.',
+    a: 'Usually 1 to 2 inches — just enough to clear the hidden perimeter track. A backlit translucent ceiling is the exception, since it needs more depth between the LED and the membrane so the light spreads evenly.',
   },
   {
     q: 'What’s the difference between a stretch ceiling and a drop ceiling?',
-    a: 'A traditional drop ceiling uses a visible grid and individual panels. A stretch ceiling uses a tensioned membrane to create a seamless, modern surface that can also integrate lighting.',
+    a: 'A traditional drop ceiling uses a visible grid and individual panels. A stretch ceiling uses a tensioned PVC or textile membrane to create a seamless, modern surface that can also integrate lighting.',
   },
   {
     q: 'How long does installation take?',
-    a: 'A standard room is usually finished in four to six hours. Projects with light lines, multiple levels or commercial scope take two to three days. There is no puttying, sanding, painting or long drying time.',
-  },
-  {
-    q: 'Is there anywhere you would not recommend one?',
-    a: 'We do not recommend a PVC membrane in unheated spaces — a fabric system is the better choice there — or anywhere the surface faces a high risk of being cut or knocked.',
+    a: 'A standard ceiling is usually finished in four to six hours. Projects with light lines, multiple levels or commercial scope take two to three days.',
   },
   {
     q: 'What warranty and areas do you cover?',
@@ -337,10 +330,14 @@ export const cities = [
   'West Vancouver',
   'North Vancouver',
   'Burnaby',
+  'New Westminster',
   'Coquitlam',
+  'Port Coquitlam',
   'Richmond',
+  'Delta',
   'Surrey',
   'Langley',
+  'Pitt Meadows',
   'Maple Ridge',
   'White Rock',
 ]

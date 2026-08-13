@@ -14,7 +14,7 @@ export default function HeroDark() {
             <span className="hero-kicker__text">Vancouver · Lower Mainland</span>
           </div>
 
-          <h1 className="hero-a__title">Modern ceilings with built‑in light.</h1>
+          <h1 className="hero-a__title">Modern сeilings with integrated lighting.</h1>
 
           <p className="hero-a__sub">
             Premium stretch ceilings with integrated LED lighting — perfectly
