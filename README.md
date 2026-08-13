@@ -219,7 +219,7 @@ Both targets build with `npm run build` and publish `dist`.
 | | Vercel | Cloudflare Pages |
 | --- | --- | --- |
 | Function source | `api/` (native) | `dist/_worker.js` (emitted by the build) |
-| SPA fallback | `vercel.json` rewrite | `public/_redirects` |
+| SPA fallback | `vercel.json` rewrite | Pages default (see below) |
 | Worker routing | automatic | `public/_routes.json` (`/api/*` only) |
 
 Each host ignores the other's config files, so they can all sit in the repo at
@@ -242,6 +242,15 @@ of normal page loads — and the `/*  /index.html  200` fallback cannot swallow
 `shared/lead.js` has no imports, so the build inlines it verbatim ahead of a
 short Worker entry — no bundler step and no extra dependency, and the core
 stays the single source of truth.
+
+**No `_redirects` on Cloudflare.** The usual SPA line `/*  /index.html  200` is
+rejected by Pages — the build log says *"Infinite loop detected in this rule and
+has been ignored"*, because Pages normalises `/index.html` back to `/`, which
+matches `/*` again. It reported `Parsed 0 valid redirect rules` and the file did
+nothing but produce a warning on every build, so it was removed. Pages already
+serves `index.html` for paths with no matching asset, which is what deep links
+need; verified live — `/privacy` and an unknown path both return `200 text/html`.
+Vercel still needs its own rewrite, which is why `vercel.json` stays.
 
 ### Behaviour
 
