@@ -64,7 +64,10 @@ export default function Contact() {
 
     try {
       const recaptchaToken = await getRecaptchaToken('lead')
-      const response = await fetch('functions/api/lead', {
+      // Same path on both hosts: Vercel serves api/lead.js here, Cloudflare
+      // Pages serves functions/api/lead.js here. Leading slash matters — a
+      // relative URL would break on /privacy.
+      const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,0 +1,5 @@
+# Cloudflare Pages SPA fallback — react-router resolves the path client-side.
+# Requests matching _routes.json (/api/*) hit Functions first, and real files
+# like /robots.txt or /assets/* are served before this rule applies.
+# Vercel ignores this file; it uses the rewrite in vercel.json instead.
+/*    /index.html   200

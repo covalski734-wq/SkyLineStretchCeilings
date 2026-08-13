@@ -5,10 +5,10 @@ import react from '@vitejs/plugin-react'
 const PAGES = ['/', '/privacy']
 
 /**
- * Vercel runs everything in /api for us in production, but the Vite dev server
- * knows nothing about it. This mounts the same handler during `npm run dev`,
- * with a minimal Express-style (req, res) shim, so the contact form is
- * testable locally instead of 404-ing.
+ * Neither host's function runtime exists during `npm run dev`, so this mounts
+ * the shared core directly — a third, local adapter alongside api/lead.js
+ * (Vercel) and functions/api/lead.js (Cloudflare). Loading the core rather
+ * than either adapter means dev exercises the code both platforms run.
  */
 function devApi() {
   return {
@@ -16,31 +16,33 @@ function devApi() {
     apply: 'serve',
     configureServer(server) {
       server.middlewares.use('/api/lead', async (req, res) => {
-        let raw = ''
-        if (req.method === 'POST') {
-          for await (const chunk of req) raw += chunk
-        }
-        try {
-          req.body = raw ? JSON.parse(raw) : {}
-        } catch {
-          req.body = {}
-        }
-
-        res.status = (code) => {
-          res.statusCode = code
-          return res
-        }
-        res.json = (payload) => {
+        const send = (status, payload) => {
+          res.statusCode = status
           res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify(payload))
-          return res
         }
 
         try {
-          const mod = await server.ssrLoadModule('/api/lead.js')
-          await mod.default(req, res)
+          const { handleLead, METHOD_NOT_ALLOWED } =
+            await server.ssrLoadModule('/shared/lead.js')
+
+          if (req.method !== 'POST') {
+            return send(METHOD_NOT_ALLOWED.status, METHOD_NOT_ALLOWED.body)
+          }
+
+          let raw = ''
+          for await (const chunk of req) raw += chunk
+          let body = {}
+          try {
+            body = raw ? JSON.parse(raw) : {}
+          } catch {
+            body = {}
+          }
+
+          const result = await handleLead({ body, env: process.env })
+          send(result.status, result.body)
         } catch (error) {
-          res.status(500).json({ success: false, error: String(error) })
+          send(500, { success: false, error: String(error) })
         }
       })
     },

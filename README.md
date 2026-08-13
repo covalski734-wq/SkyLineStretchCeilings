@@ -140,10 +140,27 @@ you want.
 
 ## Contact form → Telegram
 
-`api/lead.js` is a serverless function that validates the submission, optionally
-scores it with reCAPTCHA v3, and posts the lead to a Telegram chat. It uses the
-plain `(req, res)` signature, so **Vercel picks it up from `/api` with no
-config** — the project does not need to be Next.js.
+The endpoint lives at `/api/lead` on **both** hosting targets. All of the logic
+sits in one platform-agnostic module and each runtime gets a thin adapter, so
+the same commit deploys to Vercel and to Cloudflare Pages with no edits:
+
+```
+shared/lead.js            the whole handler: validation, reCAPTCHA, Telegram
+                          in:  { body, env }   out: { status, body }
+api/lead.js               Vercel adapter        (req, res)
+functions/api/lead.js     Cloudflare adapter    (context) -> Response
+vite.config.js devApi()   local adapter         connect middleware
+```
+
+The core only uses web-standard APIs (`fetch`, `AbortController`,
+`URLSearchParams`), so it runs unchanged on Node and on the Workers runtime.
+Env vars reach it as an argument — `process.env` on Vercel and in dev,
+`context.env` on Cloudflare — which is the one difference that would otherwise
+force a code change.
+
+Verified: all eight request cases (wrong method, empty body, each invalid
+field, honeypot, valid lead) return byte-identical status and JSON from both
+adapters.
 
 `src/components/Contact.jsx` POSTs to `/api/lead` and handles the
 sending / sent / error states.
@@ -190,9 +207,25 @@ Copy `.env.example` to `.env` and fill in:
 | `VITE_RECAPTCHA_SITE_KEY` | no | Public — inlined into the bundle |
 | `RECAPTCHA_SECRET` | no | Server-side only |
 
-On Vercel, add the same names under **Project Settings → Environment
-Variables**. Only `VITE_*` reaches the browser; the token and secret never
-leave the server.
+Add the same names in your host's dashboard — Vercel under **Project Settings →
+Environment Variables**, Cloudflare Pages under **Settings → Environment
+variables** (mark the token and secret as *Secret*). Only `VITE_*` reaches the
+browser; the Telegram token and reCAPTCHA secret never leave the server.
+
+### Deploying
+
+Both targets build with `npm run build` and publish `dist`.
+
+| | Vercel | Cloudflare Pages |
+| --- | --- | --- |
+| Function source | `api/` | `functions/` |
+| SPA fallback | `vercel.json` rewrite | `public/_redirects` |
+| Function routing | automatic | `public/_routes.json` (`/api/*` only) |
+
+Each host ignores the other's config files, so all four can sit in the repo at
+once. `_routes.json` keeps Cloudflare from invoking a Function for every static
+request, which also stops the `/*  /index.html  200` fallback from swallowing
+`/api/lead`.
 
 ### Behaviour
 
