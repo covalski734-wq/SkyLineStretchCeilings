@@ -64,7 +64,7 @@ export default function Contact() {
 
     try {
       const recaptchaToken = await getRecaptchaToken('lead')
-      const response = await fetch('/api/lead', {
+      const response = await fetch('functions/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
