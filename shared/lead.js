@@ -92,7 +92,7 @@ export async function handleLead({ body = {}, env = {} }) {
   const postal = field(body.postal_code, LIMITS.postal)
   const message = field(body.message, LIMITS.message)
 
-  if (!name || !phone || !postal) {
+  if (!name || !phone || !email || !postal) {
     return { status: 400, body: { message: 'Missing required fields' } }
   }
 
@@ -100,7 +100,7 @@ export async function handleLead({ body = {}, env = {} }) {
   if (!/^\d{10,15}$/.test(phone.replace(/\D/g, ''))) {
     return { status: 400, body: { message: 'Invalid phone number' } }
   }
-  if (email && !EMAIL_RE.test(email)) {
+  if (!EMAIL_RE.test(email)) {
     return { status: 400, body: { message: 'Invalid email address' } }
   }
   if (!POSTAL_RE.test(postal)) {
@@ -123,7 +123,20 @@ export async function handleLead({ body = {}, env = {} }) {
         RECAPTCHA_TIMEOUT_MS
       )
       const result = await verification.json()
-      if (!result.success || result.score < MIN_SCORE) {
+
+      // Only a *scored* verdict is allowed to reject a lead. success:false
+      // means the check could not be made at all — an unregistered domain, a
+      // mismatched key pair, an expired or reused token. Blocking on that turns
+      // one console misconfiguration into "every enquiry silently disappears",
+      // and it buys nothing: a bot can already skip the token entirely, which
+      // lands on the no-token path above. The honeypot and field validation
+      // still apply either way.
+      if (result.success === false) {
+        console.warn(
+          '[lead] reCAPTCHA could not verify, letting the lead through:',
+          (result['error-codes'] || []).join(', ') || 'no error codes'
+        )
+      } else if (typeof result.score === 'number' && result.score < MIN_SCORE) {
         return {
           status: 403,
           body: { message: 'Failed reCAPTCHA verification', score: result.score },
@@ -155,9 +168,7 @@ export async function handleLead({ body = {}, env = {} }) {
     '',
     `<b>Name:</b> ${escapeHtml(name)}`,
     `<b>Phone:</b> ${phoneLinks(phone)}`,
-    email
-      ? `<b>Email:</b> <a href="mailto:${escapeAttr(email)}">${escapeHtml(email)}</a>`
-      : '',
+    `<b>Email:</b> <a href="mailto:${escapeAttr(email)}">${escapeHtml(email)}</a>`,
     `<b>Postal code:</b> ${escapeHtml(postal.toUpperCase())}`,
     message ? `<b>Message:</b> ${escapeHtml(message)}` : '',
   ].filter(Boolean)

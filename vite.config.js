@@ -9,6 +9,29 @@ const fromRoot = (path) => fileURLToPath(new URL(path, import.meta.url))
 const PAGES = ['/', '/privacy']
 
 /**
+ * A sitemap needs absolute URLs, so a bare host like
+ * "example.pages.dev" is not usable — it has to carry the scheme.
+ */
+function normaliseSiteUrl(raw) {
+  const value = String(raw || '')
+    .trim()
+    .replace(/\/+$/, '')
+
+  if (!value) return { url: '', problem: 'VITE_SITE_URL is not set' }
+
+  if (!/^https?:\/\//i.test(value)) {
+    return {
+      url: '',
+      problem:
+        `VITE_SITE_URL is missing the scheme ("${value}") — sitemap URLs ` +
+        'must be absolute, so search engines would reject the file',
+    }
+  }
+
+  return { url: value, problem: '' }
+}
+
+/**
  * Cloudflare adapter, emitted into the build output as dist/_worker.js.
  *
  * The documented `functions/` directory only works if Pages discovers it at the
@@ -109,11 +132,11 @@ function devApi() {
  * Emits robots.txt and sitemap.xml at build time so the canonical host lives
  * in one env var instead of being hardcoded in several files.
  *
- * Without VITE_SITE_URL the sitemap is skipped rather than written with a
- * guessed domain — search engines reject sitemaps whose URLs point elsewhere,
- * so a wrong one is worse than none.
+ * Without a usable VITE_SITE_URL the sitemap is skipped rather than written
+ * with a guessed or malformed domain — search engines reject sitemaps whose
+ * URLs point elsewhere or omit the scheme, so a wrong one is worse than none.
  */
-function seoFiles(siteUrl) {
+function seoFiles({ url: siteUrl, problem: siteUrlProblem }) {
   return {
     name: 'seo-files',
     apply: 'build',
@@ -135,9 +158,9 @@ function seoFiles(siteUrl) {
 
       if (!siteUrl) {
         this.warn(
-          'VITE_SITE_URL is not set — sitemap.xml was skipped and robots.txt ' +
-            'has no Sitemap line. Set it to the production origin ' +
-            '(e.g. https://skylineceilings.ca) and rebuild.'
+          `${siteUrlProblem} — sitemap.xml was skipped and robots.txt has no ` +
+            'Sitemap line. Set VITE_SITE_URL to the production origin, ' +
+            'including the scheme (e.g. https://skylineceilings.ca), and rebuild.'
         )
         return
       }
@@ -167,7 +190,7 @@ export default defineConfig(({ mode }) => {
   // VITE_* into the client bundle, so these stay server-side.
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''))
 
-  const siteUrl = (process.env.VITE_SITE_URL || '').trim().replace(/\/+$/, '')
+  const siteUrl = normaliseSiteUrl(process.env.VITE_SITE_URL)
 
   return {
     // Single page app: Vite's dev and preview servers fall back to index.html

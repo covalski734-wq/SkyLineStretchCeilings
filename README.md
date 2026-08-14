@@ -171,7 +171,7 @@ sending / sent / error states.
 {
   "name":           "Ivan Test",
   "phone":          "+1 604 555 0123",
-  "email":          "",               // optional
+  "email":          "you@example.com",
   "postal_code":    "V6B 1A1",
   "message":        "",               // optional
   "website":        "",               // honeypot, must stay empty
@@ -180,10 +180,11 @@ sending / sent / error states.
 }
 ```
 
-Required: `name`, `phone`, `postal_code`. Email is optional but validated when
-filled. Postal code is required because it tells you whether the address is in
-the service area before anyone drives out — relax it by dropping the check in
-`validate()` in `Contact.jsx` and the `!postal` guard in `api/lead.js`.
+Required: `name`, `phone`, `email`, `postal_code`. Only `message` is optional.
+Postal code is required because it tells you whether the address is in the
+service area before anyone drives out. To relax any of them, drop the check in
+`validate()` in `Contact.jsx` **and** the matching guard in `shared/lead.js` —
+both sides enforce it.
 
 Every format is checked on both sides: the client for instant feedback, the API
 again because client checks are only UX.
@@ -254,11 +255,24 @@ Vercel still needs its own rewrite, which is why `vercel.json` stays.
 
 ### Behaviour
 
-- **reCAPTCHA is optional and never blocks a lead.** Verification runs only when
-  both the site key and the secret are set. If Google times out or errors, the
-  submission goes through anyway — losing a real customer costs more than
-  letting a bot through. The score threshold is `0.3`, because mobile devices
-  routinely score 0.3–0.5.
+- **reCAPTCHA only rejects on a score, never on a failed check.** Verification
+  runs when both the site key and the secret are set. A low score (below `0.3`,
+  since mobile devices routinely score 0.3–0.5) is a real bot signal and gets a
+  403. Anything else — timeout, `success: false`, an unregistered domain, a
+  mismatched key pair, a reused token — lets the submission through and logs the
+  error codes instead.
+
+  That asymmetry is deliberate. Blocking on `success: false` turns a single
+  console misconfiguration into *every enquiry silently disappearing*, and it
+  buys nothing: a bot can already omit the token entirely, which lands on the
+  skip path. The honeypot and field validation still apply either way.
+
+  **Domains must be registered.** reCAPTCHA rejects tokens from hosts that are
+  not on the site key's allow-list, and the badge then shows *"ERROR for site
+  owner: Invalid domain for site key"*. Cloudflare gives every preview
+  deployment a fresh `<hash>.<project>.pages.dev` host, so register the bare
+  `<project>.pages.dev` — subdomains of a listed domain are accepted — plus the
+  production domain.
 - **Honeypot.** A hidden `website` field; if it is filled the API answers `200`
   and silently drops the lead, so bots get no signal.
 - **UTM tags** are read off the landing URL and kept in `sessionStorage`

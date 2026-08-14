@@ -25,7 +25,9 @@ function validate({ name, phone, email, postal }) {
     }
   }
 
-  if (email.trim() && !EMAIL_RE.test(email.trim())) {
+  if (!email.trim()) {
+    found.email = 'Please enter your email address.'
+  } else if (!EMAIL_RE.test(email.trim())) {
     found.email = 'Enter a valid email address.'
   }
 
@@ -103,7 +105,6 @@ export default function Contact() {
     <div className="form__field">
       <label className="form__label" htmlFor={`cf-${key}`}>
         {label}
-        {props.optional && <span className="form__hint"> (optional)</span>}
       </label>
       <input
         id={`cf-${key}`}
@@ -172,7 +173,6 @@ export default function Contact() {
                   placeholder: 'you@example.com',
                   autoComplete: 'email',
                   maxLength: 160,
-                  optional: true,
                 })}
                 {field('postal', 'Postal code', {
                   name: 'postal_code',
